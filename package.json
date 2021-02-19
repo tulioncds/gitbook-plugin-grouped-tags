@@ -1,21 +1,21 @@
 {
-    "name": "gitbook-plugin-tags",
-    "description": "Add tags to GitBook",
-    "version": "1.5.2",
+    "name": "gitbook-plugin-grouped-tags",
+    "description": "Add grouped tags to GitBook",
+    "version": "1.0.0",
     "engines": {
         "gitbook": "*"
     },
-    "homepage": "https://github.com/billryan/gitbook-plugin-tags",
+    "homepage": "https://github.com/tulioncds/gitbook-plugin-grouped-tags",
     "dependencies": {
       "github-slugid": "^1.0.1"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/billryan/gitbook-plugin-tags.git"
+        "url": "https://github.com/tulioncds/gitbook-plugin-grouped-tags.git"
     },
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/billryan/gitbook-plugin-tags/issues"
+        "url": "https://github.com/tulioncds/gitbook-plugin-grouped-tags/issues"
     },
     "gitbook": {
         "properties": {
@@ -23,6 +23,13 @@
                 "type": "string",
                 "description": "placement to display tags on the page",
                 "default": "top"
+            },
+            "groups": {
+                "type": "object",
+                "description": "Groups of tags",
+                "default": [
+                    {"placeholder": "tags", "legend": ""}
+                ]
             }
         }
     },
