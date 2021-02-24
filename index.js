@@ -4,6 +4,7 @@ var eol = require('os').EOL;
 
 var tags_map = {}
 
+
 module.exports = {
   book: {
     assets: './assets',
@@ -12,6 +13,49 @@ module.exports = {
     ]
   },
   hooks: {
+    "init": function(){  
+      this.summary.walk(function(p){
+        var page = this.getPageByPath(p.path)
+
+        var groupedTags = this.config.get('pluginsConfig.tags.groups') || [{"placeholder": "tags", "legend": ""}];
+        for (var i = 0; i < groupedTags.length; i++) {
+          // extract tags from page or YAML
+          var rawtags = '';
+          if (page.tags) {
+            // extract from YAML
+            rawtags = page.tags;
+          } else {
+            // extract from page
+            page.content = page.content.concat(eol);  // prevent no end of line
+            var reg = new RegExp("\^\\s*"+groupedTags[i].placeholder+":\\s*\\[*(.*?)\\]*$", 'im')
+            var _tag_exist = page.content.match(reg);
+            if (!_tag_exist) break;
+            rawtags = _tag_exist[1];
+          }
+
+          // process both YAML and RegExp string
+          rawtags = ('' + rawtags).split(',');
+          var tags = {}
+          tags[groupedTags[i].placeholder] = []
+          rawtags.forEach(function(e) {
+            var tags_ = e.match(/^\s*['"]*\s*(.*?)\s*['"]*\s*$/)[1];
+            if (tags_) tags[groupedTags[i].placeholder].push(tags_);
+          })
+
+          // push to tags_map
+          if (!tags_map[groupedTags[i].placeholder]) {
+            tags_map[groupedTags[i].placeholder] = {}
+          }
+          tags[groupedTags[i].placeholder].forEach(function(e) {
+            if (!tags_map[groupedTags[i].placeholder][e]) tags_map[groupedTags[i].placeholder][e] = [];
+            tags_map[groupedTags[i].placeholder][e].push({
+              url: page.path,
+              title: page.title
+            });
+          });
+        }
+      }.bind(this))
+    },
     "page:before": function(page) {
       if (this.output.name != 'website') return page;
 
@@ -35,7 +79,7 @@ module.exports = {
       var groupedTags = this.config.get('pluginsConfig.tags.groups') || [{"placeholder": "tags", "legend": ""}];
 
       for (var i = 0; i < groupedTags.length; i++) {
-        // extract tags from page or YAML
+         // extract tags from page or YAML
         var rawtags = '';
         if (page.tags) {
           // extract from YAML
@@ -48,7 +92,7 @@ module.exports = {
           if (!_tag_exist) return page;
           rawtags = _tag_exist[1];
         }
-
+ 
         // process both YAML and RegExp string
         rawtags = ('' + rawtags).split(',');
         var tags = {}
@@ -56,18 +100,6 @@ module.exports = {
         rawtags.forEach(function(e) {
           var tags_ = e.match(/^\s*['"]*\s*(.*?)\s*['"]*\s*$/)[1];
           if (tags_) tags[groupedTags[i].placeholder].push(tags_);
-        })
-        
-        // push to tags_map
-        if (!tags_map[groupedTags[i].placeholder]) {
-          tags_map[groupedTags[i].placeholder] = {}
-        }
-        tags[groupedTags[i].placeholder].forEach(function(e) {
-          if (!tags_map[groupedTags[i].placeholder][e]) tags_map[groupedTags[i].placeholder][e] = [];
-          tags_map[groupedTags[i].placeholder][e].push({
-            url: page.path,
-            title: page.title
-          });
         })
 
         // generate tags before html
