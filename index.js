@@ -2,6 +2,8 @@ var tags_map = {};
 var slug = require('github-slugid');
 var eol = require('os').EOL;
 
+var tags_map = {}
+
 module.exports = {
   book: {
     assets: './assets',
@@ -57,14 +59,16 @@ module.exports = {
         })
         
         // push to tags_map
-        tags_map[groupedTags[i].placeholder] = {}
+        if (!tags_map[groupedTags[i].placeholder]) {
+          tags_map[groupedTags[i].placeholder] = {}
+        }
         tags[groupedTags[i].placeholder].forEach(function(e) {
           if (!tags_map[groupedTags[i].placeholder][e]) tags_map[groupedTags[i].placeholder][e] = [];
           tags_map[groupedTags[i].placeholder][e].push({
             url: page.path,
             title: page.title
           });
-        }) 
+        })
 
         // generate tags before html
         var tags_before_ = [];
@@ -106,7 +110,6 @@ module.exports = {
           }
         }
       }
-
       
       return page;
     },
