@@ -57,8 +57,6 @@ module.exports = {
       }.bind(this))
     },
     "page:before": function(page) {
-      if (this.output.name != 'website') return page;
-
       var pageName = page.path.replace('.md', '');
 
       if (page.path.indexOf('tags-') > -1) {
@@ -77,7 +75,7 @@ module.exports = {
       }
 
       var groupedTags = this.config.get('pluginsConfig.tags.groups') || [{"placeholder": "tags", "legend": ""}];
-
+      
       for (var i = 0; i < groupedTags.length; i++) {
          // extract tags from page or YAML
         var rawtags = '';
@@ -111,6 +109,7 @@ module.exports = {
             tags_before_.push('link:/'+groupedTags[i].placeholder+'.html#' + slug(e) + '[' + e + ']');
           }
         })
+        
         if (page.type === 'markdown') {
           if (groupedTags[i].legend) {
             var tags_before = eol + groupedTags[i].legend + tags_before_.join(' ') + eol;

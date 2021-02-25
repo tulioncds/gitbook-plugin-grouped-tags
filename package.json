@@ -1,7 +1,7 @@
 {
     "name": "gitbook-plugin-grouped-tags",
     "description": "Add grouped tags to GitBook",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "engines": {
         "gitbook": "*"
     },
